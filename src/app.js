@@ -2,7 +2,8 @@ import express, { json } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { db } from "./database.js";
-import { signupSchema, signinSchema } from "../src/schemas/user-schema.js"
+import { signupSchema, signinSchema } from "./schemas/user-schemas.js"
+import { transactionSchema } from "./schemas/transactions-schemas.js";
 import httpStatus from "http-status";
 import bcrypt from "bcrypt";
 
@@ -51,6 +52,24 @@ app.post('/sign-in', async (req, res) => {
             return res.sendStatus(httpStatus.UNAUTHORIZED);
         }
         res.sendStatus(httpStatus.OK);
+    }
+    catch (err){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
+    } 
+})
+
+app.post('/transactions', async (req, res) => {
+    const transaction = req.body;
+
+    const validation = transactionSchema.validate(transaction, { abortEarly: false })
+    if (validation.error) {
+        const errors = validation.error.details.map((detail) => detail.message);
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(errors);
+    }
+
+    try { 
+        await db.collection("transactions").insertOne(transaction)
+        res.sendStatus(httpStatus.CREATED);
     }
     catch (err){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
