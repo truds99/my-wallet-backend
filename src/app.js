@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { db } from "./database.js";
 import { signupSchema, signinSchema } from "../src/schemas/user-schema.js"
 import httpStatus from "http-status";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 const app = express();
@@ -23,7 +24,8 @@ app.post('/sign-up', async (req, res) => {
         if (await db.collection("users").findOne({ email: user.email })) {
             return res.sendStatus(httpStatus.CONFLICT)
         }
-        await db.collection("users").insertOne(user);
+        await db.collection("users")
+            .insertOne({...user, password: bcrypt.hashSync(user.password, 10)});
         res.sendStatus(httpStatus.CREATED);
     }
     catch (err){
@@ -40,13 +42,14 @@ app.post('/sign-in', async (req, res) => {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(errors);
     }
 
-    try { 
-        if (!await db.collection("users").findOne({ email: user.email })) {
-            return res.sendStatus(httpStatus.NOT_FOUND)
-        }
+    try {
         const validUser = await db.collection("users")
-            .findOne({ email: user.email, password: user.password });
-        if (!validUser) return res.sendStatus(httpStatus.UNAUTHORIZED);
+            .findOne({ email: user.email });
+
+        if (!validUser) return res.sendStatus(httpStatus.NOT_FOUND);
+        if (!bcrypt.compareSync(user.password, validUser.password)) {
+            return res.sendStatus(httpStatus.UNAUTHORIZED);
+        }
         res.sendStatus(httpStatus.OK);
     }
     catch (err){
