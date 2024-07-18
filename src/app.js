@@ -9,8 +9,8 @@ const app = express();
 app.use(cors());
 app.use(json());
 
-app.use(transactionsRouter);
 app.use(userRouter);
+app.use(transactionsRouter);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server is up and running on port ${port}`));
