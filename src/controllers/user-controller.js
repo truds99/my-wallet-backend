@@ -6,13 +6,6 @@ import jwt from "jsonwebtoken";
 
 export async function signup(req, res) {
     const user = req.body;
-
-    const validation = signupSchema.validate(user, { abortEarly: false })
-    if (validation.error) {
-        const errors = validation.error.details.map((detail) => detail.message);
-        return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(errors);
-    }
-
     try { 
         if (await db.collection("users").findOne({ email: user.email })) {
             return res.sendStatus(httpStatus.CONFLICT)
@@ -28,13 +21,6 @@ export async function signup(req, res) {
 
 export async function signin(req, res) {
     const user = req.body;
-
-    const validation = signinSchema.validate(user, { abortEarly: false })
-    if (validation.error) {
-        const errors = validation.error.details.map((detail) => detail.message);
-        return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(errors);
-    }
-
     try {
         const validUser = await db.collection("users")
             .findOne({ email: user.email });
