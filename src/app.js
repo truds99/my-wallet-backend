@@ -6,6 +6,7 @@ import { signupSchema, signinSchema } from "./schemas/user-schemas.js"
 import { transactionSchema } from "./schemas/transactions-schemas.js";
 import httpStatus from "http-status";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 const app = express();
@@ -51,7 +52,10 @@ app.post('/sign-in', async (req, res) => {
         if (!bcrypt.compareSync(user.password, validUser.password)) {
             return res.sendStatus(httpStatus.UNAUTHORIZED);
         }
-        res.sendStatus(httpStatus.OK);
+
+        const token = jwt.sign({ userId: validUser._id }, process.env.JWT);
+
+        res.status(httpStatus.OK).send(token);
     }
     catch (err){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
