@@ -54,7 +54,7 @@ npm install
 Create a .env file in the root directory and add your MongoDB URI, server port, and JWT secret.
 
 ```bash
-MONGODB_URI=your_mongodb_uri
+DATABASE_URL=your_database_url
 PORT=your_port_number
 JWT=your_JWT_secret
 ```
