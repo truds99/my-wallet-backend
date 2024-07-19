@@ -56,7 +56,7 @@ Create a .env file in the root directory and add your MongoDB URI, server port, 
 ```bash
 DATABASE_URL=your_database_url
 PORT=your_port_number
-JWT=your_JWT_secret
+JWT_SECRET=your_JWT_secret
 ```
 
 ### 3. Start the server
