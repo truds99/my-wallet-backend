@@ -29,3 +29,28 @@ export async function getTransactions(req, res) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
     } 
 }
+
+export async function editTransactions(req, res) {
+    const transaction = req.body;
+    const { id } = req.params;
+    const userId = res.locals.user._id;
+
+    try { 
+        const existingTransaction = 
+            await db.collection("transactions").findOne({ _id: new ObjectId(id) });
+
+        if (!existingTransaction) return res.sendStatus(httpStatus.NOT_FOUND);
+        if (existingTransaction.userId.toString() !== userId.toString()) {
+            return res.sendStatus(httpStatus.UNAUTHORIZED);
+        }
+
+        await db.collection("transactions").updateOne(
+            { _id: new ObjectId(id) },
+            { $set: transaction }
+        );
+        res.sendStatus(httpStatus.NO_CONTENT);
+    }
+    catch (err){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
+    } 
+}
