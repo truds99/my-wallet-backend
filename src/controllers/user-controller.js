@@ -30,7 +30,7 @@ export async function signin(req, res) {
             return res.sendStatus(httpStatus.UNAUTHORIZED);
         }
 
-        const token = jwt.sign({ userId: validUser._id }, process.env.JWT);
+        const token = jwt.sign({ userId: validUser._id }, process.env.JWT_SECRET);
 
         res.status(httpStatus.OK).send(token);
     }
