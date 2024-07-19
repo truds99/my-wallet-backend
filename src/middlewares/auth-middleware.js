@@ -12,7 +12,7 @@ export async function validateToken(req, res, next) {
     if (!token) return res.sendStatus(401);
 
     try {
-        jwt.verify(token, process.env.JWT, async (error, decoded) => {
+        jwt.verify(token, process.env.JWT_SECRET, async (error, decoded) => {
             if (error) return res.sendStatus(httpStatus.UNAUTHORIZED);
             const user = await db.collection("users").findOne({ _id: new ObjectId(decoded.userId) });
             if (!user) return sendStatus(401);
