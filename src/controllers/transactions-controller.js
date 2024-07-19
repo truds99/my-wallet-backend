@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import { db } from "../config/database.js";
 
 export async function postTransactions(req, res) {
-    const transaction = req.body;
+    const transaction = {...req.body, userId: res.locals.user._id};
     try { 
         await db.collection("transactions").insertOne(transaction)
         res.sendStatus(httpStatus.CREATED);
