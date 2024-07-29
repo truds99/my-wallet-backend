@@ -9,6 +9,9 @@ This project is a Node.js API for an electronic wallet application using MongoDB
 - Token-based Authentication: Secure endpoints using JWT tokens.
 - Wallet CRUD Operations: Create, read, update, and delete wallet entries.
 
+## Deployment
+https://my-wallet-backend-vsot.onrender.com
+
 ## Technologies
 The following tools and frameworks were used in the construction of the project:<br>
 <p>
@@ -51,9 +54,9 @@ npm install
 Create a .env file in the root directory and add your MongoDB URI, server port, and JWT secret.
 
 ```bash
-MONGODB_URI=your_mongodb_uri
+DATABASE_URL=your_database_url
 PORT=your_port_number
-JWT=your_JWT_secret
+JWT_SECRET=your_JWT_secret
 ```
 
 ### 3. Start the server
